@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Natalino</title>
+
+    <!-- Fonte bonita -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Montserrat", sans-serif;
+            background: linear-gradient(#b30000, #660000);
+            color: white;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #cc0000;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid gold;
+            box-shadow: 0 0 20px gold;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 40px;
+            color: gold;
+            text-shadow: 0 0 10px white;
+        }
+
+        header img {
+            width: 80px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .content {
+            margin: 40px auto;
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(3px);
+            border: 2px solid gold;
+            box-shadow: 0 0 15px rgba(255,255,255,0.4);
+        }
+
+        a {
+            color: gold;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: white;
+            text-shadow: 0 0 10px gold;
+        }
+
+        /* Bolinhas de neve */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            font-size: 20px;
+            color: white;
+            animation: fall 8s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10px); opacity: 1; }
+            100% { transform: translateY(110vh); opacity: 0; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🎅 Blog Natalino 🎄</h1>
+    </header>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- ❄ Gerador simples de neve usando JS (sem Django range) -->
+    <script>
+        for (let i = 0; i < 40; i++) {
+            let snow = document.createElement("div");
+            snow.classList.add("snowflake");
+            snow.textContent = "❄";
+            snow.style.left = Math.random() * 100 + "vw";
+            snow.style.animationDuration = (5 + Math.random() * 5) + "s";
+            snow.style.opacity = Math.random();
+            document.body.appendChild(snow);
+        }
+    </script>
+
+</body>
+</html>
