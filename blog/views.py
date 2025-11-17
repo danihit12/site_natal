@@ -1,69 +1,54 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
-from .forms import PostForm, CommentForm
 
-
-# LISTAGEM DE POSTS
+# LISTAGEM
 def post_list(request):
-    posts = Post.objects.all()
-    neve = range(40)   # 40 flocos de neve
-    return render(request, 'blog/post_list.html', {'posts': posts, 'neve': neve})
+    posts = Post.objects.all().order_by('-created_at')
+    return render(request, 'blog/post_list.html', {'posts': posts})
 
-# DETALHE DO POST + FORM DE COMENTÁRIOS
+# DETALHE
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    return render(request, 'blog/post_detail.html', {'post': post})
 
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.save()
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = CommentForm()
-
-    return render(request, 'blog/post_detail.html', {
-        'post': post,
-        'form': form,
-    })
-
-
-# CRIAR POST
+# CRIAR POST (SEM FORM)
 def post_create(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('post_list')
-    else:
-        form = PostForm()
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        image = request.FILES.get('image')
 
-    return render(request, 'blog/post_form.html', {'form': form})
+        Post.objects.create(
+            title=title,
+            content=content,
+            image=image
+        )
+        return redirect('post_list')
 
+    return render(request, 'blog/post_create_manual.html')
 
-# EDITAR POST
+# EDITAR POST (SEM FORM)
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
     if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = PostForm(instance=post)
+        post.title = request.POST.get('title')
+        post.content = request.POST.get('content')
 
-    return render(request, 'blog/post_form.html', {'form': form})
+        if request.FILES.get('image'):
+            post.image = request.FILES.get('image')
 
+        post.save()
+        return redirect('post_detail', pk=post.pk)
 
-# DELETAR POST
+    return render(request, 'blog/post_edit_manual.html', {'post': post})
+
+# DELETAR POST (COM CONFIRMAÇÃO)
 def post_delete(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
-    if request.method == 'POST':  # opcional, mas recomendado
+    if request.method == 'POST':
         post.delete()
         return redirect('post_list')
 
-    # página de confirmação de remoção
-    return render(request, 'blog/post_confirm_delete.html', {'post': post})
+    return render(request, 'blog/post_delete_confirm.html', {'post': post})

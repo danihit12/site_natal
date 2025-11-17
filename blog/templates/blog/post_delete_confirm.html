@@ -1,0 +1,8 @@
+<h2>Tem certeza que deseja apagar "{{ post.title }}"?</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Sim, deletar</button>
+</form>
+
+<a href="{% url 'post_detail' post.pk %}">Cancelar</a>
