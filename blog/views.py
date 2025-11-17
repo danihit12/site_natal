@@ -52,3 +52,6 @@ def post_delete(request, pk):
         return redirect('post_list')
 
     return render(request, 'blog/post_delete_confirm.html', {'post': post})
+def contato(request):
+    form = ContatoForm()
+    return render(request, "contato.html", {"form": form})
