@@ -1,57 +1,66 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from .models import Post, Comment
+from .forms import CommentForm, PostForm
 
-# LISTAGEM
-def post_list(request):
-    posts = Post.objects.all().order_by('-created_at')
-    return render(request, 'blog/post_list.html', {'posts': posts})
 
-# DETALHE
-def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    return render(request, 'blog/post_detail.html', {'post': post})
+# LISTAGEM DE POSTS
+class PostListView(ListView):
+    model = Post
+    template_name = "blog/post_list.html"
+    context_object_name = "posts"
 
-# CRIAR POST (SEM FORM)
-def post_create(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        image = request.FILES.get('image')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["neve"] = range(40)  # mantém tema natalino
+        return context
 
-        Post.objects.create(
-            title=title,
-            content=content,
-            image=image
-        )
-        return redirect('post_list')
 
-    return render(request, 'blog/post_create_manual.html')
+# DETALHE DO POST + FORM DE COMENTÁRIOS
+class PostDetailView(DetailView):
+    model = Post
+    template_name = "blog/post_detail.html"
+    context_object_name = "post"
 
-# EDITAR POST (SEM FORM)
-def post_edit(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = CommentForm()
+        return context
 
-    if request.method == 'POST':
-        post.title = request.POST.get('title')
-        post.content = request.POST.get('content')
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = CommentForm(request.POST)
 
-        if request.FILES.get('image'):
-            post.image = request.FILES.get('image')
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = self.object
+            comment.save()
+            return redirect("post_detail", pk=self.object.pk)
 
-        post.save()
-        return redirect('post_detail', pk=post.pk)
+        # se der erro de validação:
+        context = self.get_context_data(form=form)
+        return self.render_to_response(context)
+    
 
-    return render(request, 'blog/post_edit_manual.html', {'post': post})
+# CRIAR POST
+class PostCreateView(CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = "blog/post_form.html"
+    success_url = reverse_lazy("post_list")
 
-# DELETAR POST (COM CONFIRMAÇÃO)
-def post_delete(request, pk):
-    post = get_object_or_404(Post, pk=pk)
 
-    if request.method == 'POST':
-        post.delete()
-        return redirect('post_list')
+# EDITAR POST
+class PostEditView(UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = "blog/post_form.html"
+    success_url = reverse_lazy("post_list")
 
-    return render(request, 'blog/post_delete_confirm.html', {'post': post})
-def contato(request):
-    form = ContatoForm()
-    return render(request, "contato.html", {"form": form})
+
+# DELETAR POST
+class PostDeleteView(DeleteView):
+    model = Post
+    template_name = "blog/post_confirm_delete.html"
+    success_url = reverse_lazy("post_list")
