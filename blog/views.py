@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from .models import Post, Comment
+from .models import Post, Comment, Category
 from .forms import CommentForm, PostForm
 
 
@@ -13,11 +13,29 @@ class PostListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["neve"] = range(40)  # mantém tema natalino
+        context["neve"] = range(40)
         return context
 
 
-# DETALHE DO POST + FORM DE COMENTÁRIOS
+# LISTAGEM DE CATEGORIAS
+class CategoryListView(ListView):
+    model = Category
+    template_name = "blog/category_list.html"
+    context_object_name = "categories"
+
+
+# DETALHE DE UMA CATEGORIA
+def category_detail(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    posts = Post.objects.filter(category=category)
+
+    return render(request, 'blog/category_detail.html', {
+        'category': category,
+        'posts': posts
+    })
+
+
+# DETALHE DE UM POST
 class PostDetailView(DetailView):
     model = Post
     template_name = "blog/post_detail.html"
@@ -26,7 +44,7 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = CommentForm()
-        context["neve"] = range(40)  # 
+        context["neve"] = range(40)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -39,10 +57,9 @@ class PostDetailView(DetailView):
             comment.save()
             return redirect("post_detail", pk=self.object.pk)
 
-        # se der erro de validação:
         context = self.get_context_data(form=form)
         return self.render_to_response(context)
-    
+
 
 # CRIAR POST
 class PostCreateView(CreateView):

@@ -18,7 +18,17 @@
 </a>
 <p>{{ post.content }}</p>
 
-<p><strong>Categoria:</strong> {{ post.category }}</p>
+<p><strong>Categorias:</strong>
+    {% for cat in post.categories.all %}
+        <a href="{% url 'category_detail' cat.id %}">{{ cat.name }}</a>
+        {% if not forloop.last %}, {% endif %}
+    {% empty %}
+        Nenhuma categoria
+    {% endfor %}
+</p>
+
+
+
 
 <a href="{% url 'post_update' post.pk %}">Editar</a>
 <a href="{% url 'post_delete' post.pk %}">Deletar</a>
