@@ -1,0 +1,24 @@
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p>
+<p><b>Categoria:</b> {{ post.category }}</p>
+
+
+<a href="/post/{{ post.pk }}/editar/">Editar</a>
+<a href="/post/{{ post.pk }}/deletar/">Deletar</a>
+<hr>
+
+
+<h2>Comentários</h2>
+<ul>
+{% for c in post.comments.all %}
+<li><b>{{ c.author }}</b>: {{ c.text }}</li>
+{% endfor %}
+</ul>
+
+
+<h3>Adicionar Comentário</h3>
+<form method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<button type="submit">Enviar</button>
+</form>
