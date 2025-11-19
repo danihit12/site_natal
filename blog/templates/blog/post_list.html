@@ -3,7 +3,8 @@
 {% block content %}
 <h1>Posts</h1>
 
-<a href="/post/novo/">Novo Post</a>
+<a href="{% url 'post_create' %}">Criar novo</a>
+
 
 <ul>
     {% for post in posts %}

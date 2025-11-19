@@ -1,24 +1,45 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+
 <h1>{{ post.title }}</h1>
+<a href="{% url 'post_list' %}" style="
+    display:inline-block;
+    padding:6px 12px;
+    background:#d32f2f;
+    color:white;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:bold;
+">
+⬅ Voltar para a Página Inicial
+</a>
 <p>{{ post.content }}</p>
-<p><b>Categoria:</b> {{ post.category }}</p>
 
+<p><strong>Categoria:</strong> {{ post.category }}</p>
 
-<a href="/post/{{ post.pk }}/editar/">Editar</a>
-<a href="/post/{{ post.pk }}/deletar/">Deletar</a>
+<a href="{% url 'post_update' post.pk %}">Editar</a>
+<a href="{% url 'post_delete' post.pk %}">Deletar</a>
+
 <hr>
-
 
 <h2>Comentários</h2>
 <ul>
-{% for c in post.comments.all %}
-<li><b>{{ c.author }}</b>: {{ c.text }}</li>
-{% endfor %}
+    {% for comment in post.comments.all %}
+        <li><strong>{{ comment.author }}:</strong> {{ comment.text }}</li>
+    {% empty %}
+        <li>Sem comentários ainda…</li>
+    {% endfor %}
 </ul>
 
-
 <h3>Adicionar Comentário</h3>
-<form method="post">
-{% csrf_token %}
-{{ form.as_p }}
-<button type="submit">Enviar</button>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enviar</button>
 </form>
+
+{% endblock %}

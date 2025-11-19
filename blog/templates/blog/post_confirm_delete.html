@@ -1,0 +1,32 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Confirmar exclusão{% endblock %}
+
+{% block content %}
+<h2>Tem certeza que deseja deletar este post?</h2>
+
+<p><strong>{{ object.title }}</strong></p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="
+        background: #b30000;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+    ">
+        🗑 Deletar
+    </button>
+
+    <a href="{% url 'post_detail' object.pk %}" style="
+        margin-left: 15px;
+        text-decoration: none;
+        font-weight: bold;
+    ">
+        Cancelar
+    </a>
+</form>
+{% endblock %}
