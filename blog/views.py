@@ -27,7 +27,8 @@ class CategoryListView(ListView):
 # DETALHE DE UMA CATEGORIA
 def category_detail(request, category_id):
     category = get_object_or_404(Category, id=category_id)
-    posts = Post.objects.filter(category=category)
+    posts = Post.objects.filter(categories=category)
+
 
     return render(request, 'blog/category_detail.html', {
         'category': category,
