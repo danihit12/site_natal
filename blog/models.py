@@ -19,11 +19,11 @@ class Category(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    categories = models.ManyToManyField("Category", blank=True)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    categories = models.ManyToManyField(Category, related_name="posts")  # << ADICIONE ESTA LINHA
 
     def __str__(self):
-        return self.title  # corrigido!
+        return self.title
 
 
 class Comment(models.Model):
