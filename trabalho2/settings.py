@@ -35,7 +35,9 @@ CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com/"] # adicione esta linha
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost',
+    '127.0.0.1',
+    'site-natal.onrender.com', ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
