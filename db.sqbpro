@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="db.sqlite3" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2936"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="6" parent="0"/><expanded_item id="9" parent="0"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="auth_group" custom_title="0" dock_id="4" table="4,10:mainauth_group"/><dock_state state="000000ff00000000fd00000001000000020000016e00000378fc0100000004fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000000000000000fb000000160064006f0063006b00420072006f007700730065003201000000000000016e0000000000000000fb000000160064006f0063006b00420072006f00770073006500330100000000ffffffff0000000000000000fb000000160064006f0063006b00420072006f007700730065003401000000000000016e0000011800ffffff0000016e0000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="auth_group" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="29"/><column index="2" value="39"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">SELECT *
+FROM blog_post
+ORDER BY created_at DESC;</sql><sql name="SQL 2*">SELECT *
+FROM blog_comment
+WHERE post_id = 5;
+</sql><sql name="SQL 3*">SELECT 
+    c.id,
+    c.author,
+    c.text,
+    c.created_at,
+    p.title AS post_title,
+    p.created_at AS post_date
+FROM blog_comment AS c
+JOIN blog_post AS p ON c.post_id = p.id
+WHERE c.post_id = 5;
+</sql><sql name="SQL 4*">SELECT
+    cat.id AS category_id,
+    cat.name AS category_name,
+    p.id AS post_id,
+    p.title AS post_title,
+    p.created_at
+FROM blog_category AS cat
+JOIN blog_post_categories AS pc ON pc.category_id = cat.id
+JOIN blog_post AS p ON p.id = pc.post_id
+WHERE cat.id = 2;
+
+</sql><sql name="SQL 5*">SELECT 
+    c.id AS category_id,
+    c.name AS category_name,
+    COUNT(pc.post_id) AS total_posts
+FROM blog_category AS c
+JOIN blog_post_categories AS pc 
+    ON pc.category_id = c.id
+JOIN blog_post AS p
+    ON p.id = pc.post_id
+GROUP BY c.id, c.name
+HAVING COUNT(pc.post_id) &gt;= 2;
+</sql><current_tab id="4"/></tab_sql></sqlb_project>
